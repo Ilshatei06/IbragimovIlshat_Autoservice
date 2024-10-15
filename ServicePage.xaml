@@ -45,6 +45,7 @@
                             <Button Name="EditButton" Content="Редактировать" Margin="2"></Button>
                             <Button Name="DeleteButton" Content="Удалить" Margin="2"></Button>
                         </StackPanel>
+                        
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
