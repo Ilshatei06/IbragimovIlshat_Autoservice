@@ -23,15 +23,69 @@ namespace IbragimovIlshat_Autoservice
         public ServicePage()
         {
             InitializeComponent();
-            //добавляем строки
-                // загрузить в список из бд
+
             var currentServices = IbragimovI_AutoserviceEntities.GetContext().Service.ToList();
-                // связать с нашим листвью
+
             ServiceListView.ItemsSource = currentServices;
-            //добавили строки
+
+            ComboType.SelectedIndex = 0;
+
+            UpdateServices();
 
         }
 
+        private void UpdateServices()
+        {
+            var currentSevices = IbragimovI_AutoserviceEntities.GetContext().Service.ToList();
+
+            if (ComboType.SelectedIndex == 0)
+                currentSevices = currentSevices.Where(p => (Convert.ToDouble(p.Discount) >= 0 && Convert.ToDouble(p.Discount) <= 1)).ToList();
+            
+            if (ComboType.SelectedIndex == 1)
+                currentSevices = currentSevices.Where(p => (Convert.ToDouble(p.Discount) >= 0 && Convert.ToDouble(p.Discount) < 0.05)).ToList();
+        
+            if (ComboType.SelectedIndex == 2)
+                currentSevices = currentSevices.Where(p => (Convert.ToDouble(p.Discount) >= 0.05 && Convert.ToDouble(p.Discount) < 0.15)).ToList();
+            
+            if (ComboType.SelectedIndex == 3)
+                currentSevices = currentSevices.Where(p => (Convert.ToDouble(p.Discount) >= 0.15 && Convert.ToDouble(p.Discount) < 0.30)).ToList();
+            
+            if (ComboType.SelectedIndex == 4)
+                currentSevices = currentSevices.Where(p => (Convert.ToDouble(p.Discount) >= 0.30 && Convert.ToDouble(p.Discount) < 0.70)).ToList();
+            
+            if (ComboType.SelectedIndex == 5)
+                currentSevices = currentSevices.Where(p => (Convert.ToDouble(p.Discount) >= 0.70 && Convert.ToDouble(p.Discount) <= 1)).ToList();
+            
+            currentSevices = currentSevices.Where(p => p.Title.ToLower().Contains(TBoxSearch.Text.ToLower())).ToList();
+
+            ServiceListView.ItemsSource = currentSevices.ToList();
+
+            if (RButtonDown.IsChecked.Value)
+                ServiceListView.ItemsSource = currentSevices.OrderByDescending(p => p.Cost).ToList();
+            if (RButtonUp.IsChecked.Value)
+                ServiceListView.ItemsSource = currentSevices.OrderBy(p => p.Cost).ToList();
+
+
+
+        }
+
+        private void TBoxSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateServices();
+        }
+        private void ComboType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateServices();
+        }
+
+        private void RButtonDown_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateServices();
+        }
+        private void RButtonUp_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateServices();
+        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Manager.MainFrame.Navigate(new AddEditPage());
