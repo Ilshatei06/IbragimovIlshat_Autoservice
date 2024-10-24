@@ -28,7 +28,9 @@ namespace IbragimovIlshat_Autoservice
 
             ServiceListView.ItemsSource = currentServices;
 
+
             ComboType.SelectedIndex = 0;
+
 
             UpdateServices();
 
@@ -58,7 +60,9 @@ namespace IbragimovIlshat_Autoservice
             
             currentSevices = currentSevices.Where(p => p.Title.ToLower().Contains(TBoxSearch.Text.ToLower())).ToList();
 
+
             ServiceListView.ItemsSource = currentSevices.ToList();
+
 
             if (RButtonDown.IsChecked.Value)
                 ServiceListView.ItemsSource = currentSevices.OrderByDescending(p => p.Cost).ToList();
@@ -86,9 +90,28 @@ namespace IbragimovIlshat_Autoservice
         {
             UpdateServices();
         }
-        private void Button_Click(object sender, RoutedEventArgs e)
+
+
+ 
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            Manager.MainFrame.Navigate(new AddEditPage());
+            Manager.MainFrame.Navigate(new AddEditPage(null));
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new AddEditPage((sender as Button).DataContext as Service));
+        }
+
+        //обновление актуальной страницы
+        private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (Visibility == Visibility.Visible)
+            {
+                IbragimovI_AutoserviceEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                ServiceListView.ItemsSource = IbragimovI_AutoserviceEntities.GetContext().Service.ToList();
+            }
         }
     }
 }
