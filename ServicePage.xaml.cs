@@ -41,23 +41,24 @@ namespace IbragimovIlshat_Autoservice
             var currentSevices = IbragimovI_AutoserviceEntities.GetContext().Service.ToList();
 
             if (ComboType.SelectedIndex == 0)
-                currentSevices = currentSevices.Where(p => (Convert.ToDouble(p.Discount) >= 0 && Convert.ToDouble(p.Discount) <= 1)).ToList();
-            
+                currentSevices = currentSevices.Where(p => p.DiscountInt >= 0 && p.DiscountInt <= 100).ToList();
+
             if (ComboType.SelectedIndex == 1)
-                currentSevices = currentSevices.Where(p => (Convert.ToDouble(p.Discount) >= 0 && Convert.ToDouble(p.Discount) < 0.05)).ToList();
-        
+                currentSevices = currentSevices.Where(p => p.DiscountInt >= 0 && p.DiscountInt < 5).ToList();
+
             if (ComboType.SelectedIndex == 2)
-                currentSevices = currentSevices.Where(p => (Convert.ToDouble(p.Discount) >= 0.05 && Convert.ToDouble(p.Discount) < 0.15)).ToList();
-            
+                currentSevices = currentSevices.Where(p => p.DiscountInt >= 5 && p.DiscountInt < 15).ToList();
+
             if (ComboType.SelectedIndex == 3)
-                currentSevices = currentSevices.Where(p => (Convert.ToDouble(p.Discount) >= 0.15 && Convert.ToDouble(p.Discount) < 0.30)).ToList();
-            
+                currentSevices = currentSevices.Where(p => p.DiscountInt >= 15 && p.DiscountInt < 30).ToList();
+
             if (ComboType.SelectedIndex == 4)
-                currentSevices = currentSevices.Where(p => (Convert.ToDouble(p.Discount) >= 0.30 && Convert.ToDouble(p.Discount) < 0.70)).ToList();
-            
+                currentSevices = currentSevices.Where(p => p.DiscountInt >= 30 && p.DiscountInt < 70).ToList();
+
             if (ComboType.SelectedIndex == 5)
-                currentSevices = currentSevices.Where(p => (Convert.ToDouble(p.Discount) >= 0.70 && Convert.ToDouble(p.Discount) <= 1)).ToList();
-            
+                currentSevices = currentSevices.Where(p => p.DiscountInt >= 70 && p.DiscountInt <= 100).ToList();
+
+
             currentSevices = currentSevices.Where(p => p.Title.ToLower().Contains(TBoxSearch.Text.ToLower())).ToList();
 
 
@@ -112,6 +113,37 @@ namespace IbragimovIlshat_Autoservice
                 IbragimovI_AutoserviceEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
                 ServiceListView.ItemsSource = IbragimovI_AutoserviceEntities.GetContext().Service.ToList();
             }
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var currentService = (sender as Button).DataContext as Service;
+
+            var currentClientServices = IbragimovI_AutoserviceEntities.GetContext().ClientService.ToList();
+            currentClientServices = currentClientServices.Where(p => p.ServiceID == currentService.ID).ToList();
+
+            if (currentClientServices.Count != 0)
+                MessageBox.Show("Невозможно выполнить удаление, так как существуют записи на эту услугу");
+            else
+            {
+                if (MessageBox.Show("Вы точно хотите выполнить удаление?", "Внимание!", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        IbragimovI_AutoserviceEntities.GetContext().Service.Remove(currentService);
+                        IbragimovI_AutoserviceEntities.GetContext().SaveChanges();
+
+                        ServiceListView.ItemsSource = IbragimovI_AutoserviceEntities.GetContext().Service.ToList();
+
+                        UpdateServices();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message.ToString());
+                    }
+                }
+            }
+
         }
     }
 }

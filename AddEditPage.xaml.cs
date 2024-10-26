@@ -40,16 +40,16 @@ namespace IbragimovIlshat_Autoservice
             StringBuilder errors = new StringBuilder();
 
             if (string.IsNullOrWhiteSpace(_currentService.Title))
-                errors.AppendLine("Укажите название услуги");
+                errors.AppendLine("Укажите название услуги!");
 
             if (_currentService.Cost <= 0)
-                errors.AppendLine("Укажите стоимость услуги");
+                errors.AppendLine("Скадка указана не верно!");
 
-            if (_currentService.Discount < 0)
-                errors.AppendLine("Укажите скидку");
+            if (_currentService.DiscountInt < 0 || _currentService.DiscountInt > 100)
+                errors.AppendLine("Укажите скидку верно!");
 
             if (string.IsNullOrWhiteSpace(_currentService.Duration))
-                errors.AppendLine("Укажите длительность услуги");
+                errors.AppendLine("Укажите длительность услуги!");
 
             if (errors.Length > 0)
             {
