@@ -32,7 +32,7 @@ namespace IbragimovIlshat_Autoservice
 
             DataContext = _currentService;
 
-            _currentService.Discount = 0;  //устанавливает значение скидки по умочанию 0%
+            _currentService.DiscountInt = 0;  //устанавливает значение скидки по умочанию 0%
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)

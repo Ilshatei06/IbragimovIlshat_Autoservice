@@ -36,7 +36,9 @@ namespace IbragimovIlshat_Autoservice
                 else return 0;
             }
             set 
-            { }
+            {
+                this.Discount = Convert.ToDouble(value) / 100;
+            }
         }
 
 

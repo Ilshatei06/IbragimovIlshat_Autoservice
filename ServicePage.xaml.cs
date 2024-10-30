@@ -20,6 +20,12 @@ namespace IbragimovIlshat_Autoservice
     /// </summary>
     public partial class ServicePage : Page
     {
+        int CountRecords;
+        int CountPage;
+        int CurrentPage = 0;
+
+        List<Service> CurrentPageList = new List<Service>();
+        List<Service> TableList;
         public ServicePage()
         {
             InitializeComponent();
@@ -38,41 +44,52 @@ namespace IbragimovIlshat_Autoservice
 
         private void UpdateServices()
         {
-            var currentSevices = IbragimovI_AutoserviceEntities.GetContext().Service.ToList();
+            var currentServices = IbragimovI_AutoserviceEntities.GetContext().Service.ToList();
 
             if (ComboType.SelectedIndex == 0)
-                currentSevices = currentSevices.Where(p => p.DiscountInt >= 0 && p.DiscountInt <= 100).ToList();
+                currentServices = currentServices.Where(p => p.DiscountInt >= 0 && p.DiscountInt <= 100).ToList();
 
             if (ComboType.SelectedIndex == 1)
-                currentSevices = currentSevices.Where(p => p.DiscountInt >= 0 && p.DiscountInt < 5).ToList();
+                currentServices = currentServices.Where(p => p.DiscountInt >= 0 && p.DiscountInt < 5).ToList();
 
             if (ComboType.SelectedIndex == 2)
-                currentSevices = currentSevices.Where(p => p.DiscountInt >= 5 && p.DiscountInt < 15).ToList();
+                currentServices = currentServices.Where(p => p.DiscountInt >= 5 && p.DiscountInt < 15).ToList();
 
             if (ComboType.SelectedIndex == 3)
-                currentSevices = currentSevices.Where(p => p.DiscountInt >= 15 && p.DiscountInt < 30).ToList();
+                currentServices = currentServices.Where(p => p.DiscountInt >= 15 && p.DiscountInt < 30).ToList();
 
             if (ComboType.SelectedIndex == 4)
-                currentSevices = currentSevices.Where(p => p.DiscountInt >= 30 && p.DiscountInt < 70).ToList();
+                currentServices = currentServices.Where(p => p.DiscountInt >= 30 && p.DiscountInt < 70).ToList();
 
             if (ComboType.SelectedIndex == 5)
-                currentSevices = currentSevices.Where(p => p.DiscountInt >= 70 && p.DiscountInt <= 100).ToList();
+                currentServices = currentServices.Where(p => p.DiscountInt >= 70 && p.DiscountInt <= 100).ToList();
 
 
-            currentSevices = currentSevices.Where(p => p.Title.ToLower().Contains(TBoxSearch.Text.ToLower())).ToList();
+            currentServices = currentServices.Where(p => p.Title.ToLower().Contains(TBoxSearch.Text.ToLower())).ToList();
 
 
-            ServiceListView.ItemsSource = currentSevices.ToList();
+            ServiceListView.ItemsSource = currentServices.ToList();
+
 
 
             if (RButtonDown.IsChecked.Value)
-                ServiceListView.ItemsSource = currentSevices.OrderByDescending(p => p.Cost).ToList();
+            {
+                currentServices = currentServices.OrderByDescending(p => p.Cost).ToList();
+            }
+
             if (RButtonUp.IsChecked.Value)
-                ServiceListView.ItemsSource = currentSevices.OrderBy(p => p.Cost).ToList();
+            {
+                currentServices = currentServices.OrderBy(p => p.Cost).ToList();
+            }
 
-
-
+            ServiceListView.ItemsSource = currentServices;
+            TableList = currentServices;
+            ChangePage(0, 0);
         }
+
+
+
+
 
         private void TBoxSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -93,7 +110,7 @@ namespace IbragimovIlshat_Autoservice
         }
 
 
- 
+
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
@@ -112,6 +129,8 @@ namespace IbragimovIlshat_Autoservice
             {
                 IbragimovI_AutoserviceEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
                 ServiceListView.ItemsSource = IbragimovI_AutoserviceEntities.GetContext().Service.ToList();
+
+                UpdateServices();
             }
         }
 
@@ -145,5 +164,106 @@ namespace IbragimovIlshat_Autoservice
             }
 
         }
+
+        private void ChangePage(int direction, int? selectedPage)
+        {
+            CurrentPageList.Clear();
+            CountRecords = TableList.Count;
+
+            if (CountRecords % 10 > 0)
+            {
+                CountPage = CountRecords / 10 + 1;
+            }
+            else
+            {
+                CountPage = CountRecords / 10;
+            }
+            Boolean Ifupdate = true;
+
+
+            int min;
+            if (selectedPage.HasValue)
+            {
+                if (selectedPage >= 0 && selectedPage <= CountPage)
+                {
+                    CurrentPage = (int)selectedPage;
+                    min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
+                    for (int i = CurrentPage * 10; i < min; i++)
+                    {
+                        CurrentPageList.Add(TableList[i]);
+                    }
+                }
+            }
+            else
+            {
+                switch (direction)
+                {
+                    case 1:
+                        if (CurrentPage > 0)
+                        {
+                            CurrentPage--;
+                            min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
+                            for (int i = CurrentPage * 10; i < min; i++)
+                            {
+                                CurrentPageList.Add(TableList[i]);
+                            }
+                        }
+                        else
+                        {
+                            Ifupdate = false;
+                        }
+                        break;
+                    case 2:
+                        if (CurrentPage < CountPage - 1)
+                        {
+                            CurrentPage++;
+                            min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
+                            for (int i = CurrentPage * 10; i < min; i++)
+                            {
+                                CurrentPageList.Add(TableList[i]);
+                            }
+                        }
+                        else
+                        {
+                            Ifupdate = false;
+                        }
+                        break;
+                }
+            }
+            if (Ifupdate)
+            {
+                PageListBox.Items.Clear();
+
+                for (int i = 1; i <= CountPage; i++)
+                {
+                    PageListBox.Items.Add(i);
+                }
+                PageListBox.SelectedIndex = CurrentPage;
+
+                min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
+                TBCount.Text = min.ToString();
+                TBAllRecords.Text = " из " + CountRecords.ToString();
+
+                ServiceListView.ItemsSource = CurrentPageList;
+
+                ServiceListView.Items.Refresh();
+            }
+        }
+
+        private void PageListBox_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ChangePage(0, Convert.ToInt32(PageListBox.SelectedItem.ToString()) - 1);
+        }
+        private void LeftDirButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChangePage(1, null);
+        }
+
+        private void RightDirButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChangePage(2, null);
+        }
+
+
     }
 }
