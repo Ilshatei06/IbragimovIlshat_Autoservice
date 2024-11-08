@@ -116,6 +116,9 @@
     <Compile Include="ServicePhoto.cs">
       <DependentUpon>IbragimovIModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="SignUpPage.xaml.cs">
+      <DependentUpon>SignUpPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tag.cs">
       <DependentUpon>IbragimovIModel.tt</DependentUpon>
     </Compile>
@@ -136,6 +139,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="ServicePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SignUpPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -179,16 +186,6 @@
     <Resource Include="image\service_logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="IbragimovIModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>IbragimovIModel.Context.cs</LastGenOutput>
-      <DependentUpon>IbragimovIModel.edmx</DependentUpon>
-    </Content>
-    <Content Include="IbragimovIModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>IbragimovIModel.edmx</DependentUpon>
-      <LastGenOutput>IbragimovIModel.cs</LastGenOutput>
-    </Content>
     <Resource Include="Услуги автосервиса\diz.jpg" />
     <Resource Include="image\picture.png" />
     <Resource Include="Услуги автосервиса\rulevoe-upravlenie-avtomobilya.jpg" />
@@ -210,6 +207,18 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="IbragimovIModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>IbragimovIModel.edmx</DependentUpon>
+      <LastGenOutput>IbragimovIModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="IbragimovIModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>IbragimovIModel.edmx</DependentUpon>
+      <LastGenOutput>IbragimovIModel.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

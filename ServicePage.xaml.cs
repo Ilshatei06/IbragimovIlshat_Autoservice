@@ -264,6 +264,11 @@ namespace IbragimovIlshat_Autoservice
             ChangePage(2, null);
         }
 
+        private void SignUpButton_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new SignUpPage((sender as Button).DataContext as Service));
+        }
+
 
     }
 }

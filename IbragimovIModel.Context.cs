@@ -15,7 +15,7 @@ namespace IbragimovIlshat_Autoservice
     
     public partial class IbragimovI_AutoserviceEntities : DbContext
     {
-        //добавлено
+
         private static IbragimovI_AutoserviceEntities _context;
 
         public static IbragimovI_AutoserviceEntities GetContext()
@@ -25,14 +25,12 @@ namespace IbragimovIlshat_Autoservice
 
             return _context;
         }
-        //добавлено
 
         public IbragimovI_AutoserviceEntities()
             : base("name=IbragimovI_AutoserviceEntities")
         {
         }
-       
-
+    
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();
